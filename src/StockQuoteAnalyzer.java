@@ -38,7 +38,6 @@ import exceptions.StockTickerConnectionError;
 
 /**
  * @author schilling
- * initial commit comment
  * 
  */
 public class StockQuoteAnalyzer {
