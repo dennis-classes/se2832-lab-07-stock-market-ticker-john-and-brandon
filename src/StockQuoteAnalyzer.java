@@ -116,10 +116,10 @@ public class StockQuoteAnalyzer {
 	public void playAppropriateAudio() {
 		if (audioPlayer != null) {
 			try {
-				if ((this.getPercentChangeSinceClose() > 0)) {
+				if ((this.getPercentChangeSinceClose() > 1)) {
 					audioPlayer.playHappyMusic();
 				}
-				if ((this.getPercentChangeSinceClose() <= -1)) {
+				if ((this.getPercentChangeSinceClose() <= 1)) {
 					audioPlayer.playSadMusic();
 				}
 			} catch (InvalidAnalysisState e) {

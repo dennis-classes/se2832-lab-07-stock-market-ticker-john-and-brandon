@@ -185,4 +185,44 @@ public class StockQuoteAnalyzerTest {
         //assert
         assertEquals(change, 0.11, 0.00001);
     }
+
+    @Test
+    public void refreshMethodTestShouldGetLatestInfoWhenNoConnectionError() throws InvalidStockSymbolException, StockTickerConnectionError
+    {
+        StockQuoteAnalyzer sampleStockQuote = new StockQuoteAnalyzer("A", generatorMock, audioMock);
+        sampleStockQuote.refresh();
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void refreshMethodTestShouldThrowExceptionWhenConnectionNotAvailable() throws StockTickerConnectionError, InvalidStockSymbolException
+    {
+        StockQuoteAnalyzer sampleStockQuote = new StockQuoteAnalyzer("A", null, audioMock);
+        sampleStockQuote.refresh();
+    }
+
+    @Test
+    public void testHappyAudioShouldBeInTheMoneyWhenGreaterThan1PercentChange() throws Exception {
+        StockQuoteAnalyzer sampleStockQuote = new StockQuoteAnalyzer("A", generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote("AMBR", 7.3, 8.38, 5));
+        sampleStockQuote.refresh();
+        sampleStockQuote.playAppropriateAudio();
+        verify(audioMock,times(1)).playHappyMusic();
+    }
+
+    @Test
+    public void testSadAudioShouldBeGrrrSoundWhenLessThan1PercentChange() throws Exception {
+        StockQuoteAnalyzer sampleStockQuote = new StockQuoteAnalyzer("A", generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote("AMBR", 9.3, 8.31, -0.5));
+        sampleStockQuote.refresh();
+        sampleStockQuote.playAppropriateAudio();
+        verify(audioMock,times(1)).playSadMusic();
+    }
+
+    @Test
+    public void testErrorAudioShouldPlayErrorMusicWhenChangeIsInvalid() throws InvalidAnalysisState, InvalidStockSymbolException, StockTickerConnectionError {
+        StockQuoteAnalyzer sampleStockQuote = new StockQuoteAnalyzer("A", generatorMock, audioMock);
+        sampleStockQuote.refresh();
+        sampleStockQuote.playAppropriateAudio();
+        verify(audioMock,times(1)).playErrorMusic();
+    }
 }
